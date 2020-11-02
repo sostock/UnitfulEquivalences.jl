@@ -20,5 +20,4 @@ using Test
     # Throw errors
     @test_throws ArgumentError uconvert(u"kg", 1u"eV", Spectral())
     @test_throws ArgumentError uconvert(u"ms^-1", 1u"m", MassEnergy())
-    @test_throws UndefVarError uconvert(u"kg", 1u"eV", Undefined())
 end
