@@ -14,6 +14,17 @@ and [`Spectral`](@ref) are defined.
 abstract type Equivalence end
 
 """
+    @equivalence Name
+
+Shorthand for `struct Name <: Equivalence end` to simplify the definition of equivalences.
+"""
+macro equivalence(name)
+    quote
+        Base.@__doc__ struct $(esc(name)) <: Equivalence end
+    end
+end
+
+"""
     edconvert(d::Dimensions, x::AbstractQuantity, e::Equivalence)
 
 Convert `x` to the equivalent dimension `d` using the equivalence `e`. (not exported)
@@ -81,14 +92,6 @@ via `uconvert(energyunit, wavelength, Spectral())` and
 `uconvert(lengthunit, energy, Spectral())`.
 """
 macro eqrelation(name, relation)
-    _eqrelation(name, relation)
-end
-
-_eqrelation_error() = error("second macro argument must be an (anti-)proportionality relation " *
-                            "`a/b = c` or `a*b = c`, cf. the documentation for `@equivalence` " *
-                            "or `@eqrelation`.")
-
-function _eqrelation(name, relation)
     relation isa Expr && relation.head == :(=) || _eqrelation_error()
     lhs, rhs = relation.args
     lhs isa Expr && lhs.head == :call && length(lhs.args) == 3 || _eqrelation_error()
@@ -110,41 +113,9 @@ function _eqrelation(name, relation)
     end
 end
 
-"""
-    @equivalence Name a/b = c
-    @equivalence Name a*b = c
-
-Define the equivalence `Name` as a singleton struct and add a proportional or
-antiproportional relation between dimensions `a` and `b`. The dimensions `a` and `b` must be
-specified as quantity type aliases like `Unitful.Energy`.
-
-```julia
-@equivalence Name a/b = c
-```
-is equivalent to
-```julia
-struct Name <: Equivalence end
-@eqrelation Name a/b = c
-```
-
-Attaching a docstring to the `@equivalence` call will document the `Name` struct.
-
-# Example
-
-```@julia
-@equivalence MassEnergy Energy/Mass = c0^2
-```
-In the rest frame of a particle, its energy is proportional to its mass. Defining the
-`MassEnergy` equivalence like above allows conversion between energies and masses via
-`uconvert(massunit, energy, MassEnergy())` and
-`uconvert(energyunit, massunit, MassEnergy())`.
-"""
-macro equivalence(name, relation)
-    quote
-        Base.@__doc__ struct $(esc(name)) <: Equivalence end
-        $(_eqrelation(name, relation))
-    end
-end
+_eqrelation_error() = error("second macro argument must be an (anti-)proportionality relation " *
+                            "`a/b = c` or `a*b = c`, cf. the documentation for `@equivalence` " *
+                            "or `@eqrelation`.")
 
 using Unitful: Energy, Frequency, Length, Mass, c0, h
 
@@ -156,7 +127,8 @@ Equivalence to convert between mass and energy according to the relation ``E = m
 * ``m`` is the mass and
 * ``c`` is the speed of light in vacuum.
 """
-@equivalence MassEnergy Energy/Mass = c0^2
+@equivalence MassEnergy
+@eqrelation  MassEnergy Energy/Mass = c0^2
 
 """
     Spectral
@@ -173,7 +145,8 @@ the relation ``E = hf = hc/λ``, where
     The `Spectral` equivalence does not include the wavenumber. This is to avoid mistakes,
     since there are two competing definitions of wavenumber (``1/λ`` and ``2π/λ``).
 """
-@equivalence Spectral Energy/Frequency = h
+@equivalence Spectral
+@eqrelation  Spectral Energy/Frequency = h
 @eqrelation  Spectral Energy*Length    = h*c0
 @eqrelation  Spectral Length*Frequency = c0
 
