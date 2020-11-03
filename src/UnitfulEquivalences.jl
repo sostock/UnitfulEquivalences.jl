@@ -13,6 +13,8 @@ and [`PhotonEnergy`](@ref) are defined.
 """
 abstract type Equivalence end
 
+Base.broadcastable(x::Equivalence) = Ref(x)
+
 """
     @equivalence Name
 
