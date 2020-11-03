@@ -77,8 +77,8 @@ dimtype(::Type{Union{Quantity{T,D,U}, Level{L,S,Quantity{T,D,U}} where {L,S}} wh
     @eqrelation Name a*b = c
 
 Add a proportional or antiproportional relation between dimensions `a` and `b` to an
-existing equivalence `Name`. The dimensions `a` and `b` must be specified as quantity type
-aliases like `Unitful.Energy`.
+existing equivalence type `Name <: Equivalence`. The dimensions `a` and `b` must be
+specified as quantity type aliases like `Unitful.Energy`.
 
 # Example
 
