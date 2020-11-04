@@ -41,7 +41,7 @@ struct PhotonEnergy{freq, len, num} <: Equivalence
 end
 
 @inline check_photonarg(s::Symbol) =
-    s == :linear || s == :angular || throw(ArgumentError("PhotonEnergy parameter must be :linear or :angular"))
+    s === :linear || s === :angular || throw(ArgumentError("PhotonEnergy parameter must be :linear or :angular"))
 
 PhotonEnergy(; frequency=:linear, wavelength=:linear, wavenumber=:linear) =
     PhotonEnergy{frequency, wavelength, wavenumber}()
@@ -58,14 +58,29 @@ Base.show(io::IO, e::PhotonEnergy{freq, len, num}) where {freq, len, num} =
 @eqrelation PhotonEnergy{F,L,:linear}  where {F,L} Energy/Wavenumber = h*c0
 @eqrelation PhotonEnergy{F,L,:angular} where {F,L} Energy/Wavenumber = ħ*c0
 
-@eqrelation PhotonEnergy                   Frequency*Length = c0
-@eqrelation PhotonEnergy{:linear,:angular} Frequency*Length = c0/2π
-@eqrelation PhotonEnergy{:angular,:linear} Frequency*Length = c0*2π
+function edconvert(::dimtype(Frequency), x::Length, ::PhotonEnergy{F,L}) where {F,L}
+    F === L       ? c0/x      :
+    F === :linear ? c0/(π*2x) : 2c0*(π/x)
+end
+function edconvert(::dimtype(Length), x::Frequency, ::PhotonEnergy{F,L}) where {F,L}
+    F === L       ? c0/x      :
+    F === :linear ? c0/(π*2x) : 2c0*(π/x)
+end
 
-@eqrelation PhotonEnergy                             Frequency/Wavenumber = c0
-@eqrelation PhotonEnergy{:linear,L,:angular} where L Frequency/Wavenumber = c0/2π
-@eqrelation PhotonEnergy{:angular,L,:linear} where L Frequency/Wavenumber = c0*2π
+function edconvert(::dimtype(Frequency), x::Wavenumber, ::PhotonEnergy{F,L,N}) where {F,L,N}
+    F === N       ? c0*x       :
+    F === :linear ? c0/2*(x/π) : 2c0*(π*x)
+end
+function edconvert(::dimtype(Wavenumber), x::Frequency, ::PhotonEnergy{F,L,N}) where {F,L,N}
+    F === N       ? x/c0       :
+    F === :linear ? 2*(π*x)/c0 : (x/π)/2c0
+end
 
-@eqrelation PhotonEnergy                             Length*Wavenumber = 1
-@eqrelation PhotonEnergy{F,:linear,:angular} where F Length*Wavenumber = 2π
-@eqrelation PhotonEnergy{F,:angular,:linear} where F Length*Wavenumber = inv(2π)
+function edconvert(::dimtype(Length), x::Wavenumber, ::PhotonEnergy{F,L,N}) where {F,L,N}
+    L === N       ? inv(x)  :
+    L === :linear ? 2*(π/x) : inv(2*(π*x))
+end
+function edconvert(::dimtype(Wavenumber), x::Length, ::PhotonEnergy{F,L,N}) where {F,L,N}
+    L === N       ? inv(x)  :
+    L === :linear ? 2*(π/x) : inv(2*(π*x))
+end
