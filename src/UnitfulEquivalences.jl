@@ -85,13 +85,14 @@ specified as quantity type aliases like `Unitful.Energy`.
 # Example
 
 ```@julia
-struct PhotonEnergy <: Equivalence end
-@eqrelation PhotonEnergy Unitful.Energy * Unitful.Length = u"h*c0"
+using Unitful: Energy, Mass, c0
+struct MassEnergy <: Equivalence end
+@eqrelation MassEnergy Energy/Mass = c0^2
 ```
-Energy and wavelength of a photon are antiproportional, their product is ``hc``. Adding this
-relation to the `PhotonEnergy` equivalence allows conversion between energies and wavelengths
-via `uconvert(energyunit, wavelength, PhotonEnergy())` and
-`uconvert(lengthunit, energy, PhotonEnergy())`.
+In the rest frame of a particle, its energy is proportional to its mass. Defining the
+`MassEnergy` equivalence like above allows conversion between energies and masses via
+`uconvert(massunit, energy, MassEnergy())` and
+`uconvert(energyunit, massunit, MassEnergy())`.
 """
 macro eqrelation(name, relation)
     relation isa Expr && relation.head == :(=) || _eqrelation_error()

@@ -7,6 +7,13 @@ Equivalence to convert between mass and energy according to the relation ``E = m
 * ``E`` is the energy,
 * ``m`` is the mass and
 * ``c`` is the speed of light in vacuum.
+
+# Example
+
+```jldoctest
+julia> uconvert(u"keV", 1u"me", MassEnergy()) # electron rest mass is equivalent to ≈511 keV
+510.9989499961642 keV
+```
 """
 @equivalence MassEnergy
 @eqrelation  MassEnergy Energy/Mass = c0^2
@@ -30,6 +37,16 @@ Equivalent quantities are converted according to the relations
 * ``h`` is the Planck constant,
 * ``ħ`` is the reduced Planck constant and
 * ``c`` is the speed of light in vacuum.
+
+# Examples
+
+```jldoctest
+julia> uconvert(u"nm", 13.6u"eV", PhotonEnergy()) # photon wavelength needed to ionize hydrogen
+91.16485178911785 nm
+
+julia> uconvert(u"Hz", 589u"nm", PhotonEnergy(frequency=:angular)) # angular frequency of sodium D line
+3.1980501991661345e15 Hz
+```
 """
 struct PhotonEnergy{freq, len, num} <: Equivalence
     function PhotonEnergy{freq, len, num}() where {freq, len, num}
