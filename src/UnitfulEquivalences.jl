@@ -117,8 +117,7 @@ macro eqrelation(name, relation)
 end
 
 _eqrelation_error() = error("second macro argument must be an (anti-)proportionality relation " *
-                            "`a/b = c` or `a*b = c`, cf. the documentation for `@equivalence` " *
-                            "or `@eqrelation`.")
+                            "`a/b = c` or `a*b = c`, cf. the documentation for `@eqrelation`.")
 
 include("pkgdefaults.jl")
 
