@@ -1,4 +1,4 @@
-using Unitful: Energy, Frequency, Length, Mass, Wavenumber, c0, h, ħ
+using Unitful: Energy, Frequency, Length, Mass, Wavenumber, c0, h, ħ, unit, ustrip
 
 """
     MassEnergy()
@@ -16,7 +16,10 @@ julia> uconvert(u"keV", 1u"me", MassEnergy()) # electron rest mass is equivalent
 ```
 """
 @equivalence MassEnergy
-@eqrelation  MassEnergy Energy/Mass = c0^2
+
+const c² = Quantity(convert(Int64, ustrip(c0)), unit(c0))^2
+
+@eqrelation MassEnergy Energy/Mass = c²
 
 """
     PhotonEnergy(; frequency=:linear, wavelength=:linear, wavenumber=:linear)
