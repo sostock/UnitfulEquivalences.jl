@@ -2,6 +2,12 @@ using Unitful
 using UnitfulEquivalences
 using Test
 
+@testset "@eqrelation" begin
+    struct EqErr end
+    @test_throws LoadError @macroexpand @eqrelation EqErr Unitful.Energy = Unitful.Mass * Unitful.c0^2
+    @test_throws LoadError @macroexpand @eqrelation EqErr Unitful.Energy + Unitful.Mass = Unitful.c0^2
+end
+
 @testset "MassEnergy" begin
     @test uconvert(u"keV", 1u"me", MassEnergy()) ≈ 510.999u"keV" (atol = 0.001u"keV")
     @test uconvert(u"kg", 1000u"keV", MassEnergy()) ≈ 1.957u"me" (atol = 0001u"me")
