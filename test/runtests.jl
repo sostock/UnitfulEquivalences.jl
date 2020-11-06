@@ -2,8 +2,9 @@ using Unitful
 using UnitfulEquivalences
 using Test
 
+struct EqErr end
+
 @testset "@eqrelation" begin
-    struct EqErr end
     @test_throws LoadError @macroexpand @eqrelation EqErr Unitful.Energy = Unitful.Mass * Unitful.c0^2
     @test_throws LoadError @macroexpand @eqrelation EqErr Unitful.Energy + Unitful.Mass = Unitful.c0^2
 end
