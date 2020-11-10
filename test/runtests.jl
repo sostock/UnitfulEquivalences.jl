@@ -76,6 +76,7 @@ end
 @testset "PhotonEnergy" begin
     @test PhotonEnergy() === PhotonEnergy(frequency=:linear, wavelength=:linear, wavenumber=:linear)
     @test PhotonEnergy(frequency=:angular) === PhotonEnergy(frequency=:angular, wavelength=:linear, wavenumber=:linear)
+    @test sprint(show, PhotonEnergy()) === "PhotonEnergy(frequency=:linear, wavelength=:linear, wavenumber=:linear)"
 
     # Energy ↔ frequency
     for L = (:linear, :angular), N = (:linear, :angular)
