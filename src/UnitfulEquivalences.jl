@@ -24,6 +24,8 @@ Convert `x` to the equivalent dimension `d` using the equivalence `e`. (not expo
 # Example
 
 ```jldoctest
+julia> using UnitfulEquivalences: edconvert
+
 julia> edconvert(dimension(u"J"), 1u"kg", MassEnergy()) # E = m*c^2
 89875517873681764 kg m^2 s^-2
 ```
@@ -79,6 +81,8 @@ For a quantity type alias as created by `Unitful.@dimension` or `Unitful.@derive
 # Example
 
 ```jldoctest
+julia> using UnitfulEquivalences: dimtype
+
 julia> dimtype(Unitful.Length)
 Unitful.Dimensions{(Unitful.Dimension{:Length}(1//1),)}
 ```
