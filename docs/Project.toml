@@ -1,0 +1,6 @@
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+UnitfulEquivalences = "da9c4bc3-91c8-4f02-8a40-6b990d2a7e0c"
+
+[compat]
+Documenter = "0.25"
