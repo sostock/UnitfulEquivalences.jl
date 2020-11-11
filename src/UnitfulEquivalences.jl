@@ -42,9 +42,9 @@ edconvert(d::Dimensions, x::AbstractQuantity, e::Equivalence) =
     throw(ArgumentError("$e defines no equivalence between dimensions $(dimension(x)) and $d."))
 
 """
-    uconvert(a::Units, x::Quantity, e::Equivalence)
+    uconvert(u::Units, x::Quantity, e::Equivalence)
 
-Convert `x` to the units `a` (of different dimensions) by using the specified equivalence.
+Convert `x` to the units `u` (of different dimensions) by using the specified equivalence.
 
 # Examples
 
@@ -58,6 +58,28 @@ julia> uconvert(u"eV", 589u"nm", PhotonEnergy()) # photon energy of sodium D₂ 
 """
 Unitful.uconvert(u::Units, x::AbstractQuantity, e::Equivalence) =
     uconvert(u, edconvert(dimension(u), x, e))
+
+"""
+    ustrip([T::Type,] u::Units, x::Quantity, e::Equivalence)
+
+Convert `x` to the units `u` (of different dimensions) by using the specified equivalence
+and return the numeric value of the resulting quantity. If `T` is supplied, also convert the
+resulting number to type `T`.
+
+# Examples
+
+```jldoctest
+julia> ustrip(u"keV", 1u"me", MassEnergy()) # electron rest mass is equivalent to ≈511 keV
+510.9989499961642
+
+julia> ustrip(u"eV", 589u"nm", PhotonEnergy()) # photon energy (in eV) of sodium D₂ line
+2.104994880020378
+```
+"""
+Unitful.ustrip(u::Units, x::AbstractQuantity, e::Equivalence) =
+    ustrip(u, edconvert(dimension(u), x, e))
+Unitful.ustrip(T::Type, u::Units, x::AbstractQuantity, e::Equivalence) =
+    ustrip(T, u, edconvert(dimension(u), x, e))
 
 """
     dimtype(x)

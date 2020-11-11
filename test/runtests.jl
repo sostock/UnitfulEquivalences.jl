@@ -26,10 +26,26 @@ UnitfulEquivalences.edconvert(::typeof(dimension(u"s")), x::Unitful.Length, ::No
     @test uconvert(u"km", 1.0u"d", Equiv1()) === 864.0u"km"
     @test uconvert(u"kg", 10u"K", Equiv1()) === 0.02u"kg"
     @test uconvert(u"K", 10u"kg", Equiv1()) === 5000.0u"K"
+    @test ustrip(u"ms", 1u"inch", Equiv1()) === (254//100)
+    @test ustrip(u"km", 1.0u"d", Equiv1()) === 864.0
+    @test ustrip(u"kg", 10u"K", Equiv1()) === 0.02
+    @test ustrip(u"K", 10u"kg", Equiv1()) === 5000.0
+    @test ustrip(Float64, u"ms", 1u"inch", Equiv1()) === 2.54
+    @test ustrip(Rational{Int}, u"km", 1.0u"d", Equiv1()) === 864//1
+    @test ustrip(Float32, u"kg", 10u"K", Equiv1()) === 0.02f0
+    @test ustrip(Int, u"K", 10u"kg", Equiv1()) === 5000
     @test_throws ArgumentError uconvert(u"s", 10u"s", Equiv1())
     @test_throws ArgumentError uconvert(u"kg", 1u"s", Equiv1())
     @test_throws ArgumentError uconvert(u"m", 1u"kg", Equiv1())
     @test_throws MethodError   uconvert(u"km", 1u"s", Equiv1) # need instance, not type
+    @test_throws ArgumentError ustrip(u"s", 10u"s", Equiv1())
+    @test_throws ArgumentError ustrip(u"kg", 1u"s", Equiv1())
+    @test_throws ArgumentError ustrip(u"m", 1u"kg", Equiv1())
+    @test_throws MethodError   ustrip(u"km", 1u"s", Equiv1) # need instance, not type
+    @test_throws ArgumentError ustrip(Float64, u"s", 10u"s", Equiv1())
+    @test_throws ArgumentError ustrip(Float64, u"kg", 1u"s", Equiv1())
+    @test_throws ArgumentError ustrip(Float64, u"m", 1u"kg", Equiv1())
+    @test_throws MethodError   ustrip(Float64, u"km", 1u"s", Equiv1) # need instance, not type
 
     # Equiv2
     @test uconvert(u"cm", 1u"minute", Equiv2()) === 21_600_000u"cm"
@@ -45,10 +61,16 @@ UnitfulEquivalences.edconvert(::typeof(dimension(u"s")), x::Unitful.Length, ::No
 
     # NoEquiv
     @test_throws MethodError uconvert(u"km", 1u"minute", NoEquiv()) # !(NoEquiv <: Equivalence)
+    @test_throws MethodError ustrip(u"km", 1u"minute", NoEquiv()) # !(NoEquiv <: Equivalence)
+    @test_throws MethodError ustrip(Float64, u"km", 1u"minute", NoEquiv()) # !(NoEquiv <: Equivalence)
 
     @testset "Broadcasting" begin
         @test uconvert.(u"ms", [5u"cm", 10u"cm"], Equiv1()) == [5u"ms", 10u"ms"]
         @test uconvert.(u"km", Quantity[1u"hr", -1u"s"], Equiv1()) == [36u"km", (-1//100)u"km"]
+        @test ustrip.(u"ms", [5u"cm", 10u"cm"], Equiv1()) == [5, 10]
+        @test ustrip.(u"km", Quantity[1u"hr", -1u"s"], Equiv1()) == [36, -1//100]
+        @test ustrip.(Float64, u"ms", [5u"cm", 10u"cm"], Equiv1()) == [5.0, 10.0]
+        @test ustrip.(Float64, u"km", Quantity[1u"hr", -1u"s"], Equiv1()) == [36.0, -0.01]
     end
 end
 
