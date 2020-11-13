@@ -7,6 +7,8 @@ UnitfulEquivalences.edconvert(::typeof(dimension(u"m")), x::Unitful.Time,   ::Eq
 UnitfulEquivalences.edconvert(::typeof(dimension(u"s")), x::Unitful.Length, ::Equiv1) = x * (1//10)u"s/m"
 UnitfulEquivalences.edconvert(::typeof(dimension(u"g")), x::Unitful.Temperature, ::Equiv1) = x * 2.0u"g/K"
 UnitfulEquivalences.edconvert(::typeof(dimension(u"K")), x::Unitful.Mass,        ::Equiv1) = x * 0.5u"K/g"
+UnitfulEquivalences.edconvert(::typeof(NoDims),          x::Unitful.Energy,        ::Equiv1) = x / u"eV"
+UnitfulEquivalences.edconvert(::typeof(dimension(u"J")), x::DimensionlessQuantity, ::Equiv1) = x * u"eV"
 
 struct Equiv2 <: Equivalence end
 UnitfulEquivalences.edconvert(::typeof(dimension(u"m")), x::Unitful.Time,   ::Equiv2) = ustrip(u"s", x)^3 * u"m"
@@ -26,10 +28,14 @@ UnitfulEquivalences.edconvert(::typeof(dimension(u"s")), x::Unitful.Length, ::No
     @test uconvert(u"km", 1.0u"d", Equiv1()) === 864.0u"km"
     @test uconvert(u"kg", 10u"K", Equiv1()) === 0.02u"kg"
     @test uconvert(u"K", 10u"kg", Equiv1()) === 5000.0u"K"
+    @test uconvert(u"eV", 10u"mm/m", Equiv1()) === (1//100)u"eV"
+    @test uconvert(NoUnits, 10u"eV", Equiv1()) === 10
     @test ustrip(u"ms", 1u"inch", Equiv1()) === (254//100)
     @test ustrip(u"km", 1.0u"d", Equiv1()) === 864.0
     @test ustrip(u"kg", 10u"K", Equiv1()) === 0.02
     @test ustrip(u"K", 10u"kg", Equiv1()) === 5000.0
+    @test ustrip(u"eV", 10u"mm/m", Equiv1()) === 1//100
+    @test ustrip(NoUnits, 10u"eV", Equiv1()) === 10
     @test ustrip(Float64, u"ms", 1u"inch", Equiv1()) === 2.54
     @test ustrip(Rational{Int}, u"km", 1.0u"d", Equiv1()) === 864//1
     @test ustrip(Float32, u"kg", 10u"K", Equiv1()) === 0.02f0
@@ -77,12 +83,15 @@ end
 struct Equiv4 <: Equivalence end
 @eqrelation Equiv4 Unitful.Velocity/Unitful.Voltage = 1.5*u"m/(V*s)"
 @eqrelation Equiv4 Unitful.Force*Unitful.Volume = -1u"N*m^3"
+@eqrelation Equiv4 Unitful.Energy/DimensionlessQuantity = u"eV"
 
 @testset "@eqrelation" begin
     @test uconvert(u"m/s", 10u"V", Equiv4()) === 15.0u"m/s"
     @test uconvert(u"V", 15u"m/s", Equiv4()) === 10.0u"V"
     @test uconvert(u"N", 10u"m^3", Equiv4()) === -0.1u"N"
     @test uconvert(u"m^3", 5u"N", Equiv4()) === -0.2u"m^3"
+    @test uconvert(NoUnits, 5u"eV", Equiv4()) === 5
+    @test uconvert(u"keV", 5u"km/m", Equiv4()) === 5u"keV"
     @test_throws ArgumentError uconvert(u"m^3", 1u"V", Equiv4())
     @test_throws LoadError @macroexpand @eqrelation Equiv4 Unitful.Energy = Unitful.Mass * Unitful.c0^2
     @test_throws LoadError @macroexpand @eqrelation Equiv4 Unitful.Energy + Unitful.Mass = Unitful.c0^2

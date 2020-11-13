@@ -3,7 +3,8 @@ module UnitfulEquivalences
 export @equivalence, @eqrelation, Equivalence, MassEnergy, PhotonEnergy
 
 import Unitful
-using Unitful: AbstractQuantity, Dimensions, Level, Quantity, Units, dimension, uconvert
+using Unitful: AbstractQuantity, DimensionlessQuantity, Dimensions, Level, NoDims, Quantity,
+               Units, dimension, uconvert
 
 """
     Equivalence
@@ -95,6 +96,7 @@ Unitful.Dimensions{(Unitful.Dimension{:Length}(1//1),)}
 ```
 """
 dimtype(::Type{Union{Quantity{T,D,U}, Level{L,S,Quantity{T,D,U}} where {L,S}} where {T,U}}) where D = typeof(D)
+dimtype(::typeof(DimensionlessQuantity)) = typeof(NoDims)
 
 """
     @eqrelation Name a/b = c
