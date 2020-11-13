@@ -27,6 +27,9 @@ macro equivalence(name)
     end
 end
 
+# A unit that is equivalent to NoUnits but doesn’t vanish when multiplied by a number
+const UnitUnit = Unitful.Hz*Unitful.s
+
 """
     edconvert(d::Dimensions, x::AbstractQuantity, e::Equivalence)
 
@@ -41,6 +44,7 @@ julia> edconvert(dimension(u"J"), 1u"kg", MassEnergy()) # E = m*c^2
 """
 edconvert(d::Dimensions, x::AbstractQuantity, e::Equivalence) =
     throw(ArgumentError("$e defines no equivalence between dimensions $(dimension(x)) and $d."))
+edconvert(d::Dimensions, x::Number, e::Equivalence) = edconvert(d, x*UnitUnit, e)
 
 """
     uconvert(u::Units, x::Quantity, e::Equivalence)
@@ -57,8 +61,7 @@ julia> uconvert(u"eV", 589u"nm", PhotonEnergy()) # photon energy of sodium D₂ 
 2.104994880020378 eV
 ```
 """
-Unitful.uconvert(u::Units, x::AbstractQuantity, e::Equivalence) =
-    uconvert(u, edconvert(dimension(u), x, e))
+Unitful.uconvert(u::Units, x, e::Equivalence) = uconvert(u, edconvert(dimension(u), x, e))
 
 """
     ustrip([T::Type,] u::Units, x::Quantity, e::Equivalence)
@@ -77,10 +80,8 @@ julia> ustrip(u"eV", 589u"nm", PhotonEnergy()) # photon energy (in eV) of sodium
 2.104994880020378
 ```
 """
-Unitful.ustrip(u::Units, x::AbstractQuantity, e::Equivalence) =
-    ustrip(u, edconvert(dimension(u), x, e))
-Unitful.ustrip(T::Type, u::Units, x::AbstractQuantity, e::Equivalence) =
-    ustrip(T, u, edconvert(dimension(u), x, e))
+Unitful.ustrip(u::Units, x, e::Equivalence)          = ustrip(u, edconvert(dimension(u), x, e))
+Unitful.ustrip(T::Type, u::Units, x, e::Equivalence) = ustrip(T, u, edconvert(dimension(u), x, e))
 
 """
     dimtype(x)

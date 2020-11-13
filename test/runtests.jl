@@ -29,28 +29,31 @@ UnitfulEquivalences.edconvert(::typeof(dimension(u"s")), x::Unitful.Length, ::No
     @test uconvert(u"kg", 10u"K", Equiv1()) === 0.02u"kg"
     @test uconvert(u"K", 10u"kg", Equiv1()) === 5000.0u"K"
     @test uconvert(u"eV", 10u"mm/m", Equiv1()) === (1//100)u"eV"
+    @test uconvert(u"eV", 10, Equiv1()) === 10u"eV"
     @test uconvert(NoUnits, 10u"eV", Equiv1()) === 10
     @test ustrip(u"ms", 1u"inch", Equiv1()) === (254//100)
     @test ustrip(u"km", 1.0u"d", Equiv1()) === 864.0
     @test ustrip(u"kg", 10u"K", Equiv1()) === 0.02
     @test ustrip(u"K", 10u"kg", Equiv1()) === 5000.0
     @test ustrip(u"eV", 10u"mm/m", Equiv1()) === 1//100
+    @test ustrip(u"eV", 10, Equiv1()) === 10
     @test ustrip(NoUnits, 10u"eV", Equiv1()) === 10
     @test ustrip(Float64, u"ms", 1u"inch", Equiv1()) === 2.54
     @test ustrip(Rational{Int}, u"km", 1.0u"d", Equiv1()) === 864//1
     @test ustrip(Float32, u"kg", 10u"K", Equiv1()) === 0.02f0
     @test ustrip(Int, u"K", 10u"kg", Equiv1()) === 5000
+    @test ustrip(Float64, u"eV", 10, Equiv1()) === 10.0
     @test_throws ArgumentError uconvert(u"s", 10u"s", Equiv1())
     @test_throws ArgumentError uconvert(u"kg", 1u"s", Equiv1())
-    @test_throws ArgumentError uconvert(u"m", 1u"kg", Equiv1())
+    @test_throws ArgumentError uconvert(u"m", 1, Equiv1())
     @test_throws MethodError   uconvert(u"km", 1u"s", Equiv1) # need instance, not type
     @test_throws ArgumentError ustrip(u"s", 10u"s", Equiv1())
     @test_throws ArgumentError ustrip(u"kg", 1u"s", Equiv1())
-    @test_throws ArgumentError ustrip(u"m", 1u"kg", Equiv1())
+    @test_throws ArgumentError ustrip(u"m", 1, Equiv1())
     @test_throws MethodError   ustrip(u"km", 1u"s", Equiv1) # need instance, not type
     @test_throws ArgumentError ustrip(Float64, u"s", 10u"s", Equiv1())
     @test_throws ArgumentError ustrip(Float64, u"kg", 1u"s", Equiv1())
-    @test_throws ArgumentError ustrip(Float64, u"m", 1u"kg", Equiv1())
+    @test_throws ArgumentError ustrip(Float64, u"m", 1, Equiv1())
     @test_throws MethodError   ustrip(Float64, u"km", 1u"s", Equiv1) # need instance, not type
 
     # Equiv2
@@ -92,6 +95,7 @@ struct Equiv4 <: Equivalence end
     @test uconvert(u"m^3", 5u"N", Equiv4()) === -0.2u"m^3"
     @test uconvert(NoUnits, 5u"eV", Equiv4()) === 5
     @test uconvert(u"keV", 5u"km/m", Equiv4()) === 5u"keV"
+    @test uconvert(u"MeV", 5, Equiv4()) === (1//200_000)u"MeV"
     @test_throws ArgumentError uconvert(u"m^3", 1u"V", Equiv4())
     @test_throws LoadError @macroexpand @eqrelation Equiv4 Unitful.Energy = Unitful.Mass * Unitful.c0^2
     @test_throws LoadError @macroexpand @eqrelation Equiv4 Unitful.Energy + Unitful.Mass = Unitful.c0^2
