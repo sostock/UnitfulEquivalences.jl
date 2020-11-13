@@ -1,6 +1,6 @@
 module UnitfulEquivalences
 
-export @equivalence, @eqrelation, Equivalence, MassEnergy, PhotonEnergy
+export @eqrelation, Equivalence, MassEnergy, PhotonEnergy
 
 import Unitful
 using Unitful: AbstractQuantity, DimensionlessQuantity, Dimensions, Level, NoDims, NoUnits,
@@ -15,17 +15,6 @@ and [`PhotonEnergy`](@ref) are defined.
 abstract type Equivalence end
 
 Base.broadcastable(x::Equivalence) = Ref(x)
-
-"""
-    @equivalence Name
-
-Shorthand for `struct Name <: Equivalence end` to simplify the definition of equivalences.
-"""
-macro equivalence(name)
-    quote
-        Base.@__doc__ struct $(esc(name)) <: Equivalence end
-    end
-end
 
 """
     edconvert(d::Dimensions, x::AbstractQuantity, e::Equivalence)
