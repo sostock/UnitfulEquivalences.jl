@@ -3,8 +3,8 @@ module UnitfulEquivalences
 export @equivalence, @eqrelation, Equivalence, MassEnergy, PhotonEnergy
 
 import Unitful
-using Unitful: AbstractQuantity, DimensionlessQuantity, Dimensions, Level, NoDims, Quantity,
-               Units, dimension, uconvert
+using Unitful: AbstractQuantity, DimensionlessQuantity, Dimensions, Level, NoDims, NoUnits,
+               Quantity, Units, dimension, uconvert
 
 """
     Equivalence
@@ -27,9 +27,6 @@ macro equivalence(name)
     end
 end
 
-# A unit that is equivalent to NoUnits but doesn’t vanish when multiplied by a number
-const UnitUnit = Unitful.Hz*Unitful.s
-
 """
     edconvert(d::Dimensions, x::AbstractQuantity, e::Equivalence)
 
@@ -44,7 +41,8 @@ julia> edconvert(dimension(u"J"), 1u"kg", MassEnergy()) # E = m*c^2
 """
 edconvert(d::Dimensions, x::AbstractQuantity, e::Equivalence) =
     throw(ArgumentError("$e defines no equivalence between dimensions $(dimension(x)) and $d."))
-edconvert(d::Dimensions, x::Number, e::Equivalence) = edconvert(d, x*UnitUnit, e)
+edconvert(d::Dimensions, x::Number, e::Equivalence) =
+    edconvert(d, Quantity{typeof(x),NoDims,typeof(NoUnits)}(x), e)
 
 """
     uconvert(u::Units, x::Quantity, e::Equivalence)
