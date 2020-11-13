@@ -15,7 +15,7 @@ julia> uconvert(u"keV", 1u"me", MassEnergy()) # electron rest mass is equivalent
 510.9989499961642 keV
 ```
 """
-@equivalence MassEnergy
+struct MassEnergy <: Equivalence end
 
 const c² = Quantity(convert(Int64, ustrip(c0)), unit(c0))^2
 
