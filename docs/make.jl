@@ -9,6 +9,8 @@ makedocs(
     modules = [UnitfulEquivalences],
     pages = [
              "Home" => "index.md",
+             "Converting between equivalent quantities" => "usage.md",
+             "Defining new equivalences" => "newequivalences.md"
             ]
 )
 
