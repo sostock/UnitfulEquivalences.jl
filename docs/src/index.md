@@ -6,7 +6,7 @@ This package extends [Unitful.jl](https://github.com/PainterQubits/Unitful.jl) t
 
 This package is compatible with Julia ≥ 1.0 and Unitful ≥ 1.0. It can be installed by typing
 ```
-] add https://github.com/sostock/UnitfulEquivalences.jl
+] add UnitfulEquivalences
 ```
 in the Julia REPL.
 
