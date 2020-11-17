@@ -15,5 +15,6 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/sostock/UnitfulEquivalences.jl.git"
+    repo = "github.com/sostock/UnitfulEquivalences.jl.git",
+    devbranch = "main"
 )
