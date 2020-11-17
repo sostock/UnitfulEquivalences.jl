@@ -1,12 +1,28 @@
-# [WIP] UnitfulEquivalences
+# UnitfulEquivalences
 
 [![Build Status](https://travis-ci.com/sostock/UnitfulEquivalences.jl.svg?branch=main)](https://travis-ci.com/sostock/UnitfulEquivalences.jl)
 [![Build status](https://ci.appveyor.com/api/projects/status/vkfjf3j2w1r3m22v/branch/main?svg=true)](https://ci.appveyor.com/project/sostock/unitfulequivalences-jl/branch/main)
 [![codecov](https://codecov.io/gh/sostock/UnitfulEquivalences.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/sostock/UnitfulEquivalences.jl)
 [![Coverage Status](https://coveralls.io/repos/github/sostock/UnitfulEquivalences.jl/badge.svg?branch=main)](https://coveralls.io/github/sostock/UnitfulEquivalences.jl?branch=main)
 
-This package extends the [Unitful.jl](https://github.com/PainterQubits/Unitful.jl)
-package to enable conversion between quantities of different dimensions, related by an
-equivalence (e.g., the mass–energy equivalence *E* = *mc*²).
+[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://sostock.github.io/UnitfulEquivalences.jl/dev)
 
-This package is **work in progress** and not yet registered.
+This package extends the [Unitful.jl](https://github.com/PainterQubits/Unitful.jl) package to enable conversion between quantities of different dimensions, related by an equivalence (e.g., conversion between mass and energy using the mass–energy equivalence *E* = *mc*²).
+For its usage, see the [documentation](https://sostock.github.io/UnitfulEquivalences.jl/dev).
+
+## Installation
+
+This package is compatible with Julia ≥ 1.0 and Unitful ≥ 1.0. It is not yet registered and can be installed by typing
+```
+] add https://github.com/sostock/UnitfulEquivalences.jl
+```
+in the Julia REPL.
+
+## Example usage
+
+```julia
+julia> using Unitful, UnitfulEquivalences
+
+julia> uconvert(u"keV", 1u"me", MassEnergy()) # electron rest mass equals ≈511 keV
+510.9989499961642 keV
+```
