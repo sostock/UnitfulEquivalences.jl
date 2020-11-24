@@ -18,6 +18,12 @@ struct Equiv3 <: Equivalence; val::Int; end
 UnitfulEquivalences.edconvert(::typeof(dimension(u"J")),   x::Unitful.Area,   e::Equiv3) = e.val*u"J" / ustrip(u"m^2", x)
 UnitfulEquivalences.edconvert(::typeof(dimension(u"m^2")), x::Unitful.Energy, e::Equiv3) = e.val*u"m^2" / ustrip(u"J", x)
 
+struct ExtEquiv1 <: ExtendedEquivalence end
+UnitfulEquivalences.propconstant(e::ExtEquiv1) = 10u"m/s"
+
+struct ExtEquiv2 <: ExtendedEquivalence; val::Int; end
+UnitfulEquivalences.propconstant(e::ExtEquiv2) = e.val*u"J"
+
 struct NoEquiv end
 UnitfulEquivalences.edconvert(::typeof(dimension(u"m")), x::Unitful.Time,   ::NoEquiv) = x * 10u"m/s"
 UnitfulEquivalences.edconvert(::typeof(dimension(u"s")), x::Unitful.Length, ::NoEquiv) = x * (1//10)u"s/m"
@@ -73,6 +79,22 @@ UnitfulEquivalences.edconvert(::typeof(dimension(u"s")), x::Unitful.Length, ::No
     @test uconvert(u"J", 20u"ha", Equiv3(-4)) === -0.000_02u"J"
     @test uconvert(u"cm^2", 1u"J", Equiv3(2)) === 20_000.0u"cm^2"
     @test uconvert(u"cm^2", 1u"J", Equiv3(5)) === 50_000.0u"cm^2"
+
+    # ExtEquiv1
+    @test @inferred(UnitfulEquivalences.edconvert(dimension(u"m"), 1u"s", ExtEquiv1())) === 10u"m"
+    @test @inferred(UnitfulEquivalences.edconvert(dimension(u"s"), 1u"m", ExtEquiv1())) === 0.1u"s"
+    @test uconvert(u"m", 10u"s", ExtEquiv1()) === 100u"m"
+    @test uconvert(u"s", 10u"km", ExtEquiv1()) === 1_000.0u"s"
+    @test uconvert(u"kg/s", 1u"N", ExtEquiv1()) === 0.1u"kg/s"
+    @test uconvert(u"kN", 1000u"g/s", ExtEquiv1()) === (1//100)u"kN"
+    @test_throws ArgumentError uconvert(u"kg/m", 1u"N", ExtEquiv1())
+
+    # ExtEquiv2
+    @test @inferred(UnitfulEquivalences.edconvert(dimension(u"J"), Quantity{Int,NoDims,typeof(NoUnits)}(1), ExtEquiv2(5))) === 5u"J"
+    @test @inferred(UnitfulEquivalences.edconvert(NoDims, 1u"kJ", ExtEquiv2(10))) === 0.1u"kJ/J"
+    @test uconvert(u"m^-1", 10u"N", ExtEquiv2(2)) === 5.0u"m^-1"
+    @test uconvert(u"N*m", 10, ExtEquiv2(-3)) === -30u"N*m"
+    @test_throws ArgumentError uconvert(u"J^2", 5u"mm/m", ExtEquiv2(1))
 
     # NoEquiv
     @test_throws MethodError uconvert(u"km", 1u"minute", NoEquiv()) # !(NoEquiv <: Equivalence)

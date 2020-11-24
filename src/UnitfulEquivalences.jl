@@ -1,6 +1,6 @@
 module UnitfulEquivalences
 
-export @eqrelation, Equivalence, MassEnergy, PhotonEnergy
+export @eqrelation, Equivalence, ExtendedEquivalence, MassEnergy, PhotonEnergy
 
 import Unitful
 using Unitful: AbstractQuantity, AffineQuantity, DimensionlessQuantity, Dimensions, Level,
@@ -9,10 +9,23 @@ using Unitful: AbstractQuantity, AffineQuantity, DimensionlessQuantity, Dimensio
 """
     Equivalence
 
-Abstract supertype for all equivalences. By default, the equivalences [`MassEnergy`](@ref)
-and [`PhotonEnergy`](@ref) are defined.
+Abstract supertype for all equivalences.
 """
 abstract type Equivalence end
+
+"""
+    ExtendedEquivalence <: Equivalence
+
+Abstract supertype for all extended equivalences.
+
+In contrast to other `Equivalence`s, which generally enable conversion only between a finite
+set of dimensions, `ExtendedEquivalences` can be used to convert between any dimensions that
+are linked by a proportionality constant. For example, an `ExtendedEquivalence` based on the
+mass–energy equivalence ``E=mc^2`` would be able to convert not only between `Mass` and
+`Energy`, but also between `Mass*D` and `Energy*D` for arbitrary dimensions `D`. This is
+only possible for proportional equivalences.
+"""
+abstract type ExtendedEquivalence <: Equivalence end
 
 Base.broadcastable(x::Equivalence) = Ref(x)
 
@@ -32,6 +45,26 @@ julia> edconvert(dimension(u"J"), 1u"kg", MassEnergy()) # E = m*c^2
 """
 edconvert(d::Dimensions, x::AbstractQuantity, e::Equivalence) =
     throw(ArgumentError("$e defines no equivalence between dimensions $(dimension(x)) and $d."))
+
+function edconvert(d::Dimensions, x::AbstractQuantity, e::ExtendedEquivalence)
+    c = propconstant(e)
+    qdim = d/dimension(x)
+    cdim = dimension(c)
+    if qdim === cdim
+        x*c
+    elseif inv(qdim) === cdim
+        x/c
+    else
+        throw(ArgumentError("$e defines no equivalence between dimensions $(dimension(x)) and $d."))
+    end
+end
+
+"""
+    propconstant(e::ExtendedEquivalence)
+
+Return the proportionality constant on which the given equivalence is based.
+"""
+function propconstant end
 
 _scalarquantity(x::AbstractQuantity) = x
 _scalarquantity(x::AffineQuantity)   = uconvert(absoluteunit(x), x)
