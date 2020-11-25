@@ -1,0 +1,9 @@
+# UnitfulEquivalences.jl changelog
+
+## master
+
+* ![Enhancement](https://img.shields.io/badge/-enhancement-blue) Affine quantities are now converted to absolute quantities before calling `edconvert`, thereby eliminating the need to account for affine quantities when implementing new `edconvert` methods. ([#11](https://github.com/sostock/UnitfulEquivalences.jl/pull/11))
+
+## v0.1.0
+
+Initial release.
