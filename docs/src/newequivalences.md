@@ -18,13 +18,36 @@ using Unitful: 𝐋, 𝐌, 𝐓, Energy, Mass, c0
 UnitfulEquivalence.edconvert(::typeof(𝐋^2*𝐌*𝐓^-2), x::Mass, ::MyMassEnergy) = x * c0^2
 UnitfulEquivalence.edconvert(::typeof(𝐌), x::Energy, ::MyMassEnergy) = x / c0^2
 ```
-Note that this does not work on 32-bit systems, since `c0^2` is based on an `Int` and overflows on these systems ($$299792458^2 > 2^{31}-1$$).
+!!! warning
+    This particular example implementation does not work correctly on 32-bit systems, since `c0` is based on an `Int` and `c0^2` therefore overflows on these systems ($$299792458^2 > 2^{31}-1$$).
 
 !!! info
     When defining `edconvert` methods for `DimensionlessQuantity` arguments, the equivalence will also work with plain numbers (like `Float64`s or `Int`s), even though those are not subtypes of `DimensionlessQuantity`.
-    Furthermore, `uconvert` and `ustrip` convert affine quantities (like `°C`) to absolute quantities before calling `edconvert`, so `edconvert` only has to work on `ScalarQuantity`s.
+    Furthermore, `uconvert` and `ustrip` convert affine quantities (like `°C`) to absolute quantities before calling `edconvert`, so `edconvert` only needs to work on `ScalarQuantity`s.
 
-The definition of these `edconvert` methods could be simplified in two ways:
+After defining the two `edconvert` methods, `MyMassEnergy()` can be used to convert between mass and energy:
+```@meta
+DocTestSetup = quote
+    using Unitful, UnitfulEquivalences
+    struct MyMassEnergy <: Equivalence end
+    @eqrelation MyMassEnergy Unitful.Energy/Unitful.Mass = Unitful.c0^2
+end
+```
+```jldoctest
+julia> uconvert(u"J", 1u"kg", MyMassEnergy())
+89875517873681764 J
+```
+```@meta
+DocTestSetup = :(using Unitful, UnitfulEquivalences)
+```
+
+An equivalence can have an arbitrary number of `edconvert` methods defined for it.
+For example, the `PhotonEnergy` equivalence can convert between energy, frequency, wavelength, and wavenumber.
+For each pair of these quantities, there is one pair of `edconvert` methods defined that handles the conversion between them.
+
+### Convenience functions
+
+The definition of the `edconvert` methods above could be simplified in two ways:
 * The [`UnitfulEquivalences.dimtype`](@ref) function extracts the `Dimensions` type from a quantity type like `Unitful.Length`.
   It can be used to simplify the declaration of the first `edconvert` argument:
   ```julia
@@ -44,26 +67,6 @@ The definition of these `edconvert` methods could be simplified in two ways:
   @eqrelation MyMassEnergy Energy/Mass = c0^2
   ```
   This defines the two `edconvert` methods as shown above.
-
-Having defined the two `edconvert` methods (either by hand or using the `@eqrelation` macro), `MyMassEnergy()` can be used to convert between mass and energy:
-```@meta
-DocTestSetup = quote
-    using Unitful, UnitfulEquivalences
-    struct MyMassEnergy <: Equivalence end
-    @eqrelation MyMassEnergy Unitful.Energy/Unitful.Mass = Unitful.c0^2
-end
-```
-```jldoctest
-julia> uconvert(u"J", 1u"kg", MyMassEnergy())
-89875517873681764 J
-```
-```@meta
-DocTestSetup = :(using Unitful, UnitfulEquivalences)
-```
-
-An equivalence can have an arbitrary number of `edconvert` methods defined for it.
-For example, the `PhotonEnergy` equivalence can convert between energy, frequency, wavelength, and wavenumber.
-For each pair of these quantities, there is one pair of `edconvert` methods defined that handles the conversion between them.
 
 ### API
 
