@@ -1,7 +1,7 @@
 name = "UnitfulEquivalences"
 uuid = "da9c4bc3-91c8-4f02-8a40-6b990d2a7e0c"
 authors = ["Sebastian Stock"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
