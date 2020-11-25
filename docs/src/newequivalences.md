@@ -22,6 +22,7 @@ Note that this does not work on 32-bit systems, since `c0^2` is based on an `Int
 
 !!! info
     When defining `edconvert` methods for `DimensionlessQuantity` arguments, the equivalence will also work with plain numbers (like `Float64`s or `Int`s), even though those are not subtypes of `DimensionlessQuantity`.
+    Furthermore, `uconvert` and `ustrip` convert affine quantities (like `°C`) to absolute quantities before calling `edconvert`, so `edconvert` only has to work on `ScalarQuantity`s.
 
 The definition of these `edconvert` methods could be simplified in two ways:
 * The [`UnitfulEquivalences.dimtype`](@ref) function extracts the `Dimensions` type from a quantity type like `Unitful.Length`.

@@ -5,8 +5,8 @@ using Test
 struct Equiv1 <: Equivalence end
 UnitfulEquivalences.edconvert(::typeof(dimension(u"m")), x::Unitful.Time,   ::Equiv1) = x * 10u"m/s"
 UnitfulEquivalences.edconvert(::typeof(dimension(u"s")), x::Unitful.Length, ::Equiv1) = x * (1//10)u"s/m"
-UnitfulEquivalences.edconvert(::typeof(dimension(u"g")), x::Unitful.Temperature, ::Equiv1) = x * 2.0u"g/K"
-UnitfulEquivalences.edconvert(::typeof(dimension(u"K")), x::Unitful.Mass,        ::Equiv1) = x * 0.5u"K/g"
+UnitfulEquivalences.edconvert(::typeof(dimension(u"g")), x::Unitful.Temperature, ::Equiv1) = x * 2u"g/K"
+UnitfulEquivalences.edconvert(::typeof(dimension(u"K")), x::Unitful.Mass,        ::Equiv1) = x / 2u"g/K"
 UnitfulEquivalences.edconvert(::typeof(NoDims),          x::Unitful.Energy,        ::Equiv1) = x / u"eV"
 UnitfulEquivalences.edconvert(::typeof(dimension(u"J")), x::DimensionlessQuantity, ::Equiv1) = x * u"eV"
 
@@ -26,15 +26,19 @@ UnitfulEquivalences.edconvert(::typeof(dimension(u"s")), x::Unitful.Length, ::No
     # Equiv1
     @test uconvert(u"ms", 1u"inch", Equiv1()) === (254//100)u"ms"
     @test uconvert(u"km", 1.0u"d", Equiv1()) === 864.0u"km"
-    @test uconvert(u"kg", 10u"K", Equiv1()) === 0.02u"kg"
+    @test uconvert(u"kg", 10u"K", Equiv1()) === (1//50)u"kg"
     @test uconvert(u"K", 10u"kg", Equiv1()) === 5000.0u"K"
+    @test uconvert(u"kg", (10//1)u"°C", Equiv1()) === (5663//10_000)u"kg"
+    @test uconvert(u"°C", 10u"kg", Equiv1()) === 4726.85u"°C"
     @test uconvert(u"eV", 10u"mm/m", Equiv1()) === (1//100)u"eV"
     @test uconvert(u"eV", 10, Equiv1()) === 10u"eV"
     @test uconvert(NoUnits, 10u"eV", Equiv1()) === 10
     @test ustrip(u"ms", 1u"inch", Equiv1()) === (254//100)
     @test ustrip(u"km", 1.0u"d", Equiv1()) === 864.0
-    @test ustrip(u"kg", 10u"K", Equiv1()) === 0.02
+    @test ustrip(u"kg", 10u"K", Equiv1()) === 1//50
     @test ustrip(u"K", 10u"kg", Equiv1()) === 5000.0
+    @test ustrip(u"kg", (10//1)u"°C", Equiv1()) === (5663//10_000)
+    @test ustrip(u"°C", 10u"kg", Equiv1()) === 4726.85
     @test ustrip(u"eV", 10u"mm/m", Equiv1()) === 1//100
     @test ustrip(u"eV", 10, Equiv1()) === 10
     @test ustrip(NoUnits, 10u"eV", Equiv1()) === 10
@@ -42,6 +46,8 @@ UnitfulEquivalences.edconvert(::typeof(dimension(u"s")), x::Unitful.Length, ::No
     @test ustrip(Rational{Int}, u"km", 1.0u"d", Equiv1()) === 864//1
     @test ustrip(Float32, u"kg", 10u"K", Equiv1()) === 0.02f0
     @test ustrip(Int, u"K", 10u"kg", Equiv1()) === 5000
+    @test ustrip(Float32, u"kg", (10//1)u"°C", Equiv1()) === 0.5663f0
+    @test ustrip(Float16, u"°C", 10u"kg", Equiv1()) === Float16(4726.85)
     @test ustrip(Float64, u"eV", 10, Equiv1()) === 10.0
     @test_throws ArgumentError uconvert(u"s", 10u"s", Equiv1())
     @test_throws ArgumentError uconvert(u"kg", 1u"s", Equiv1())
