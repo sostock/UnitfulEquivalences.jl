@@ -70,7 +70,7 @@ jobs:
           julia --project=docs -e '
             using Documenter: DocMeta, doctest
             using UnitfulEquivalences
-            DocMeta.setdocmeta!(UnitfulEquivalences, :DocTestSetup, :(using Unitful); recursive=true)
+            DocMeta.setdocmeta!(UnitfulEquivalences, :DocTestSetup, :(using Unitful, UnitfulEquivalences); recursive=true)
             doctest(UnitfulEquivalences)'
       - run: julia --project=docs docs/make.jl
         env:
