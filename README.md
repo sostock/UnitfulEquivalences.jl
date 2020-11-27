@@ -1,10 +1,8 @@
 # UnitfulEquivalences
 
 [![PkgEval](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/U/UnitfulEquivalences.svg)](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html)
-[![Build Status](https://travis-ci.com/sostock/UnitfulEquivalences.jl.svg?branch=main)](https://travis-ci.com/sostock/UnitfulEquivalences.jl)
-[![Build status](https://ci.appveyor.com/api/projects/status/vkfjf3j2w1r3m22v/branch/main?svg=true)](https://ci.appveyor.com/project/sostock/unitfulequivalences-jl/branch/main)
+![CI](https://github.com/sostock/UnitfulEquivalences.jl/workflows/CI/badge.svg)
 [![codecov](https://codecov.io/gh/sostock/UnitfulEquivalences.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/sostock/UnitfulEquivalences.jl)
-[![Coverage Status](https://coveralls.io/repos/github/sostock/UnitfulEquivalences.jl/badge.svg?branch=main)](https://coveralls.io/github/sostock/UnitfulEquivalences.jl?branch=main)
 
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://sostock.github.io/UnitfulEquivalences.jl/stable)
 [![](https://img.shields.io/badge/docs-dev-blue.svg)](https://sostock.github.io/UnitfulEquivalences.jl/dev)
