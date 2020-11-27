@@ -25,7 +25,6 @@ jobs:
           - 'nightly'
         os:
           - ubuntu-latest
-          - macOS-latest
           - windows-latest
         arch:
           - x86
@@ -70,6 +69,7 @@ jobs:
       - run: |
           julia --project=docs -e '
             using Documenter: doctest
+            using Unitful
             using UnitfulEquivalences
             doctest(UnitfulEquivalences)'
       - run: julia --project=docs docs/make.jl
