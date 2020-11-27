@@ -1,7 +1,7 @@
 # UnitfulEquivalences
 
 [![PkgEval](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/U/UnitfulEquivalences.svg)](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html)
-![CI](https://github.com/sostock/UnitfulEquivalences.jl/workflows/CI/badge.svg)
+[![CI](https://github.com/sostock/UnitfulEquivalences.jl/workflows/CI/badge.svg)](https://github.com/sostock/UnitfulEquivalences.jl/actions?query=workflow%3ACI)
 [![codecov](https://codecov.io/gh/sostock/UnitfulEquivalences.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/sostock/UnitfulEquivalences.jl)
 
 [![](https://img.shields.io/badge/docs-stable-blue.svg)](https://sostock.github.io/UnitfulEquivalences.jl/stable)
