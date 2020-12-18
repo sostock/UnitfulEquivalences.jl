@@ -1,4 +1,4 @@
-using Unitful: Energy, Frequency, Length, Mass, Wavenumber, c0, h, ħ, unit, ustrip
+using Unitful: Energy, Frequency, Length, Mass, Temperature, Wavenumber, c0, h, ħ, k, unit, ustrip
 
 """
     MassEnergy()
@@ -104,3 +104,23 @@ function edconvert(::dimtype(Wavenumber), x::Length, ::PhotonEnergy{F,L,N}) wher
     L === N       ? inv(x)  :
     L === :linear ? 2*(π/x) : inv(2*(π*x))
 end
+
+"""
+    Thermal()
+
+Equivalence to convert between temperature and energy according to the relation ``E = k*T``,
+where
+* ``E`` is the energy,
+* ``T`` is the temperature and
+* ``k`` is the Boltzmann constant.
+
+# Example
+
+```jldoctest
+julia> uconvert(u"eV", 20u"°C", Thermal()) # room temperature is equivalent to ≈1/40 eV
+0.025261712457978588 eV
+```
+"""
+struct Thermal <: Equivalence end
+
+@eqrelation Thermal Energy/Temperature = k

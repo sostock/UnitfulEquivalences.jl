@@ -182,3 +182,10 @@ end
         @test uconvert(u"m^-1", 1u"m", PhotonEnergy(frequency=F, wavelength=:angular, wavenumber=:angular)) ≈ᵤ 1u"m^-1" # k = 1/ƛ
     end
 end
+
+@testset "Thermal" begin
+    @test uconvert(u"meV", 20u"°C", Thermal()) ≈ᵤ 25.261_712_457_979u"meV"
+    @test uconvert(u"eV", 5000u"K", Thermal()) ≈ᵤ 0.430_866_663_107u"eV"
+    @test uconvert(u"K", 1u"eV", Thermal()) ≈ᵤ 11_604.518_121_550u"K"
+    @test uconvert(u"°C", 1e-20u"J", Thermal()) ≈ᵤ 451.147_051_603_992u"°C"
+end

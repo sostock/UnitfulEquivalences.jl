@@ -1,6 +1,6 @@
 module UnitfulEquivalences
 
-export @eqrelation, Equivalence, MassEnergy, PhotonEnergy
+export @eqrelation, Equivalence, MassEnergy, PhotonEnergy, Thermal
 
 import Unitful
 using Unitful: AbstractQuantity, AffineQuantity, DimensionlessQuantity, Dimensions, Level,
