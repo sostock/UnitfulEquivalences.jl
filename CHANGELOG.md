@@ -2,6 +2,8 @@
 
 ## master
 
+* ![Feature](https://img.shields.io/badge/-feature-green) The `Thermal()` equivalence is added. ([#13](https://github.com/sostock/UnitfulEquivalences.jl/pull/13))
+
 ## v0.1.1
 
 * ![Enhancement](https://img.shields.io/badge/-enhancement-blue) Affine quantities are now converted to absolute quantities before calling `edconvert`, thereby eliminating the need to account for affine quantities when implementing new `edconvert` methods. ([#11](https://github.com/sostock/UnitfulEquivalences.jl/pull/11))
