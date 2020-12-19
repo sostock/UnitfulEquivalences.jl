@@ -114,72 +114,72 @@ end
     @test uconvert(u"kg", 938.272_088_16u"MeV", MassEnergy()) ≈ᵤ 1u"mp"
 end
 
-@testset "PhotonEnergy" begin
-    @test PhotonEnergy() === PhotonEnergy(frequency=:linear, wavelength=:linear, wavenumber=:linear)
-    @test PhotonEnergy(frequency=:angular) === PhotonEnergy(frequency=:angular, wavelength=:linear, wavenumber=:linear)
-    @test sprint(show, PhotonEnergy()) === "PhotonEnergy(frequency=:linear, wavelength=:linear, wavenumber=:linear)"
+@testset "Spectral" begin
+    @test Spectral() === Spectral(frequency=:linear, wavelength=:linear, wavenumber=:linear)
+    @test Spectral(frequency=:angular) === Spectral(frequency=:angular, wavelength=:linear, wavenumber=:linear)
+    @test sprint(show, Spectral()) === "Spectral(frequency=:linear, wavelength=:linear, wavenumber=:linear)"
 
     # Energy ↔ frequency
     for L = (:linear, :angular), N = (:linear, :angular)
-        @test uconvert(u"eV", 1u"MHz", PhotonEnergy(frequency=:linear, wavelength=L, wavenumber=N)) ≈ᵤ 4.135_667_697e-09u"eV" # E = h*f
-        @test uconvert(u"J", 1u"ns^-1", PhotonEnergy(frequency=:angular, wavelength=L, wavenumber=N)) ≈ᵤ 1.054_571_818e-25u"J" # E = ħ*ω
-        @test uconvert(u"Hz", 1u"eV", PhotonEnergy(frequency=:linear, wavelength=L, wavenumber=N)) ≈ᵤ 2.417_989_242e+14u"Hz" # f = E/h
-        @test uconvert(u"fs^-1", 1u"J", PhotonEnergy(frequency=:angular, wavelength=L, wavenumber=N)) ≈ᵤ 9.482_521_562e+18u"fs^-1" # ω = E/ħ
+        @test uconvert(u"eV", 1u"MHz", Spectral(frequency=:linear, wavelength=L, wavenumber=N)) ≈ᵤ 4.135_667_697e-09u"eV" # E = h*f
+        @test uconvert(u"J", 1u"ns^-1", Spectral(frequency=:angular, wavelength=L, wavenumber=N)) ≈ᵤ 1.054_571_818e-25u"J" # E = ħ*ω
+        @test uconvert(u"Hz", 1u"eV", Spectral(frequency=:linear, wavelength=L, wavenumber=N)) ≈ᵤ 2.417_989_242e+14u"Hz" # f = E/h
+        @test uconvert(u"fs^-1", 1u"J", Spectral(frequency=:angular, wavelength=L, wavenumber=N)) ≈ᵤ 9.482_521_562e+18u"fs^-1" # ω = E/ħ
     end
 
     # Energy ↔ wavelength
     for F = (:linear, :angular), N = (:linear, :angular)
-        @test uconvert(u"eV", 1u"nm", PhotonEnergy(frequency=F, wavelength=:linear, wavenumber=N)) ≈ᵤ 1239.841_984u"eV" # E = h*c/λ
-        @test uconvert(u"J", 1u"Å", PhotonEnergy(frequency=F, wavelength=:angular, wavenumber=N)) ≈ᵤ 3.161_526_773e-16u"J" # E = ħ*c/ƛ
-        @test uconvert(u"nm", 1u"keV", PhotonEnergy(frequency=F, wavelength=:linear, wavenumber=N)) ≈ᵤ 1.239_841_984u"nm" # λ = h*c/E
-        @test uconvert(u"μm", 1u"J", PhotonEnergy(frequency=F, wavelength=:angular, wavenumber=N)) ≈ᵤ 3.161_526_773e-20u"μm" # ƛ = ħ*c/E
+        @test uconvert(u"eV", 1u"nm", Spectral(frequency=F, wavelength=:linear, wavenumber=N)) ≈ᵤ 1239.841_984u"eV" # E = h*c/λ
+        @test uconvert(u"J", 1u"Å", Spectral(frequency=F, wavelength=:angular, wavenumber=N)) ≈ᵤ 3.161_526_773e-16u"J" # E = ħ*c/ƛ
+        @test uconvert(u"nm", 1u"keV", Spectral(frequency=F, wavelength=:linear, wavenumber=N)) ≈ᵤ 1.239_841_984u"nm" # λ = h*c/E
+        @test uconvert(u"μm", 1u"J", Spectral(frequency=F, wavelength=:angular, wavenumber=N)) ≈ᵤ 3.161_526_773e-20u"μm" # ƛ = ħ*c/E
     end
 
     # Energy ↔ wavenumber
     for F = (:linear, :angular), L = (:linear, :angular)
-        @test uconvert(u"eV", 1u"cm^-1", PhotonEnergy(frequency=F, wavelength=L, wavenumber=:linear)) ≈ᵤ 0.000_123_984_1984u"eV" # E = h*c*ν̃
-        @test uconvert(u"J", 1u"m^-1", PhotonEnergy(frequency=F, wavelength=L, wavenumber=:angular)) ≈ᵤ 3.161_526_773e-26u"J" # E = ħ*c*k
-        @test uconvert(u"cm^-1", 1u"J", PhotonEnergy(frequency=F, wavelength=L, wavenumber=:linear)) ≈ᵤ 5.034_116_568e+22u"cm^-1" # ν̃ = E/(h*c)
-        @test uconvert(u"m^-1", 1u"eV", PhotonEnergy(frequency=F, wavelength=L, wavenumber=:angular)) ≈ᵤ 5.067_730_716e+06u"m^-1" # k = E/(ħ*c)
+        @test uconvert(u"eV", 1u"cm^-1", Spectral(frequency=F, wavelength=L, wavenumber=:linear)) ≈ᵤ 0.000_123_984_1984u"eV" # E = h*c*ν̃
+        @test uconvert(u"J", 1u"m^-1", Spectral(frequency=F, wavelength=L, wavenumber=:angular)) ≈ᵤ 3.161_526_773e-26u"J" # E = ħ*c*k
+        @test uconvert(u"cm^-1", 1u"J", Spectral(frequency=F, wavelength=L, wavenumber=:linear)) ≈ᵤ 5.034_116_568e+22u"cm^-1" # ν̃ = E/(h*c)
+        @test uconvert(u"m^-1", 1u"eV", Spectral(frequency=F, wavelength=L, wavenumber=:angular)) ≈ᵤ 5.067_730_716e+06u"m^-1" # k = E/(ħ*c)
     end
 
     # Frequency ↔ wavelength
     for N = (:linear, :angular)
-        @test uconvert(u"MHz", 1u"nm", PhotonEnergy(frequency=:linear, wavelength=:linear, wavenumber=N)) ≈ᵤ 299_792_458_000u"MHz" # f = c/λ
-        @test uconvert(u"ns^-1", 1u"Å", PhotonEnergy(frequency=:linear, wavelength=:angular, wavenumber=N)) ≈ᵤ 4.771_345_159e+08u"ns^-1" # f = c/(2π*ƛ)
-        @test uconvert(u"fs^-1", 1u"nm", PhotonEnergy(frequency=:angular, wavelength=:linear, wavenumber=N)) ≈ᵤ 1883.651_567u"fs^-1" # ω = 2π*c/λ
-        @test uconvert(u"Hz", 1u"m", PhotonEnergy(frequency=:angular, wavelength=:angular, wavenumber=N)) ≈ᵤ 299_792_458u"Hz" # ω = c/ƛ
+        @test uconvert(u"MHz", 1u"nm", Spectral(frequency=:linear, wavelength=:linear, wavenumber=N)) ≈ᵤ 299_792_458_000u"MHz" # f = c/λ
+        @test uconvert(u"ns^-1", 1u"Å", Spectral(frequency=:linear, wavelength=:angular, wavenumber=N)) ≈ᵤ 4.771_345_159e+08u"ns^-1" # f = c/(2π*ƛ)
+        @test uconvert(u"fs^-1", 1u"nm", Spectral(frequency=:angular, wavelength=:linear, wavenumber=N)) ≈ᵤ 1883.651_567u"fs^-1" # ω = 2π*c/λ
+        @test uconvert(u"Hz", 1u"m", Spectral(frequency=:angular, wavelength=:angular, wavenumber=N)) ≈ᵤ 299_792_458u"Hz" # ω = c/ƛ
 
-        @test uconvert(u"nm", 1u"MHz", PhotonEnergy(frequency=:linear, wavelength=:linear, wavenumber=N)) ≈ᵤ 299_792_458_000u"nm" # λ = c/f
-        @test uconvert(u"Å", 1u"ns^-1", PhotonEnergy(frequency=:linear, wavelength=:angular, wavenumber=N)) ≈ᵤ 4.771_345_159e+08u"Å" # ƛ = c/(2π*f)
-        @test uconvert(u"nm", 1u"fs^-1", PhotonEnergy(frequency=:angular, wavelength=:linear, wavenumber=N)) ≈ᵤ 1883.651_567u"nm" # λ = 2π*c/ω
-        @test uconvert(u"m", 1u"Hz", PhotonEnergy(frequency=:angular, wavelength=:angular, wavenumber=N)) ≈ᵤ 299_792_458u"m" # ƛ = c/ω
+        @test uconvert(u"nm", 1u"MHz", Spectral(frequency=:linear, wavelength=:linear, wavenumber=N)) ≈ᵤ 299_792_458_000u"nm" # λ = c/f
+        @test uconvert(u"Å", 1u"ns^-1", Spectral(frequency=:linear, wavelength=:angular, wavenumber=N)) ≈ᵤ 4.771_345_159e+08u"Å" # ƛ = c/(2π*f)
+        @test uconvert(u"nm", 1u"fs^-1", Spectral(frequency=:angular, wavelength=:linear, wavenumber=N)) ≈ᵤ 1883.651_567u"nm" # λ = 2π*c/ω
+        @test uconvert(u"m", 1u"Hz", Spectral(frequency=:angular, wavelength=:angular, wavenumber=N)) ≈ᵤ 299_792_458u"m" # ƛ = c/ω
     end
 
     # Frequency ↔ wavenumber
     for L = (:linear, :angular)
-        @test uconvert(u"MHz", 1u"cm^-1", PhotonEnergy(frequency=:linear, wavelength=L, wavenumber=:linear)) ≈ᵤ 29_979.2458u"MHz" # f = c*ν̃
-        @test uconvert(u"ns^-1", 1u"m^-1", PhotonEnergy(frequency=:linear, wavelength=L, wavenumber=:angular)) ≈ᵤ 0.047_713_451_59u"ns^-1" # f = c*k/2π
-        @test uconvert(u"fs^-1", 1u"cm^-1", PhotonEnergy(frequency=:angular, wavelength=L, wavenumber=:linear)) ≈ᵤ 0.000_188_365_1567u"fs^-1" # ω = 2π*c*ν̃
-        @test uconvert(u"Hz", 1u"m^-1", PhotonEnergy(frequency=:angular, wavelength=L, wavenumber=:angular)) ≈ᵤ 299_792_458u"Hz" # ω = c*k
+        @test uconvert(u"MHz", 1u"cm^-1", Spectral(frequency=:linear, wavelength=L, wavenumber=:linear)) ≈ᵤ 29_979.2458u"MHz" # f = c*ν̃
+        @test uconvert(u"ns^-1", 1u"m^-1", Spectral(frequency=:linear, wavelength=L, wavenumber=:angular)) ≈ᵤ 0.047_713_451_59u"ns^-1" # f = c*k/2π
+        @test uconvert(u"fs^-1", 1u"cm^-1", Spectral(frequency=:angular, wavelength=L, wavenumber=:linear)) ≈ᵤ 0.000_188_365_1567u"fs^-1" # ω = 2π*c*ν̃
+        @test uconvert(u"Hz", 1u"m^-1", Spectral(frequency=:angular, wavelength=L, wavenumber=:angular)) ≈ᵤ 299_792_458u"Hz" # ω = c*k
 
-        @test uconvert(u"cm^-1", 1u"MHz", PhotonEnergy(frequency=:linear, wavelength=L, wavenumber=:linear)) ≈ᵤ 3.335_640_952e-05u"cm^-1" # ν̃ = f/c
-        @test uconvert(u"m^-1", 1u"ns^-1", PhotonEnergy(frequency=:linear, wavelength=L, wavenumber=:angular)) ≈ᵤ 20.958_450_22u"m^-1" # k = 2π*f/c
-        @test uconvert(u"cm^-1", 1u"fs^-1", PhotonEnergy(frequency=:angular, wavelength=L, wavenumber=:linear)) ≈ᵤ 5308.837_459u"cm^-1" # ν̃ = ω/(2π*c)
-        @test uconvert(u"m^-1", 1u"Hz", PhotonEnergy(frequency=:angular, wavelength=L, wavenumber=:angular)) ≈ᵤ 3.335_640_952e-09u"m^-1" # k = ω/c
+        @test uconvert(u"cm^-1", 1u"MHz", Spectral(frequency=:linear, wavelength=L, wavenumber=:linear)) ≈ᵤ 3.335_640_952e-05u"cm^-1" # ν̃ = f/c
+        @test uconvert(u"m^-1", 1u"ns^-1", Spectral(frequency=:linear, wavelength=L, wavenumber=:angular)) ≈ᵤ 20.958_450_22u"m^-1" # k = 2π*f/c
+        @test uconvert(u"cm^-1", 1u"fs^-1", Spectral(frequency=:angular, wavelength=L, wavenumber=:linear)) ≈ᵤ 5308.837_459u"cm^-1" # ν̃ = ω/(2π*c)
+        @test uconvert(u"m^-1", 1u"Hz", Spectral(frequency=:angular, wavelength=L, wavenumber=:angular)) ≈ᵤ 3.335_640_952e-09u"m^-1" # k = ω/c
     end
 
     # Wavelength ↔ wavenumber
     for F = (:linear, :angular)
-        @test uconvert(u"nm", 1u"cm^-1", PhotonEnergy(frequency=F, wavelength=:linear, wavenumber=:linear)) ≈ᵤ 10_000_000u"nm" # λ = 1/ν̃
-        @test uconvert(u"Å", 1u"m^-1", PhotonEnergy(frequency=F, wavelength=:linear, wavenumber=:angular)) ≈ᵤ 6.283_185_307e+10u"Å" # λ = 2π/k
-        @test uconvert(u"nm", 1u"cm^-1", PhotonEnergy(frequency=F, wavelength=:angular, wavenumber=:linear)) ≈ᵤ 1.591_549_431e+06u"nm" # ƛ = 1/(2π*ν̃)
-        @test uconvert(u"m", 1u"m^-1", PhotonEnergy(frequency=F, wavelength=:angular, wavenumber=:angular)) ≈ᵤ 1u"m" # ƛ = 1/k
+        @test uconvert(u"nm", 1u"cm^-1", Spectral(frequency=F, wavelength=:linear, wavenumber=:linear)) ≈ᵤ 10_000_000u"nm" # λ = 1/ν̃
+        @test uconvert(u"Å", 1u"m^-1", Spectral(frequency=F, wavelength=:linear, wavenumber=:angular)) ≈ᵤ 6.283_185_307e+10u"Å" # λ = 2π/k
+        @test uconvert(u"nm", 1u"cm^-1", Spectral(frequency=F, wavelength=:angular, wavenumber=:linear)) ≈ᵤ 1.591_549_431e+06u"nm" # ƛ = 1/(2π*ν̃)
+        @test uconvert(u"m", 1u"m^-1", Spectral(frequency=F, wavelength=:angular, wavenumber=:angular)) ≈ᵤ 1u"m" # ƛ = 1/k
 
-        @test uconvert(u"cm^-1", 1u"nm", PhotonEnergy(frequency=F, wavelength=:linear, wavenumber=:linear)) ≈ᵤ 10_000_000u"cm^-1" # ν̃ = 1/λ
-        @test uconvert(u"m^-1", 1u"Å", PhotonEnergy(frequency=F, wavelength=:linear, wavenumber=:angular)) ≈ᵤ 6.283_185_307e+10u"m^-1" # k = 2π/λ
-        @test uconvert(u"cm^-1", 1u"nm", PhotonEnergy(frequency=F, wavelength=:angular, wavenumber=:linear)) ≈ᵤ 1.591_549_431e+06u"cm^-1" # ν̃ = 1/(2π*ƛ)
-        @test uconvert(u"m^-1", 1u"m", PhotonEnergy(frequency=F, wavelength=:angular, wavenumber=:angular)) ≈ᵤ 1u"m^-1" # k = 1/ƛ
+        @test uconvert(u"cm^-1", 1u"nm", Spectral(frequency=F, wavelength=:linear, wavenumber=:linear)) ≈ᵤ 10_000_000u"cm^-1" # ν̃ = 1/λ
+        @test uconvert(u"m^-1", 1u"Å", Spectral(frequency=F, wavelength=:linear, wavenumber=:angular)) ≈ᵤ 6.283_185_307e+10u"m^-1" # k = 2π/λ
+        @test uconvert(u"cm^-1", 1u"nm", Spectral(frequency=F, wavelength=:angular, wavenumber=:linear)) ≈ᵤ 1.591_549_431e+06u"cm^-1" # ν̃ = 1/(2π*ƛ)
+        @test uconvert(u"m^-1", 1u"m", Spectral(frequency=F, wavelength=:angular, wavenumber=:angular)) ≈ᵤ 1u"m^-1" # k = 1/ƛ
     end
 end
 
