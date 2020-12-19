@@ -108,7 +108,7 @@ end
 """
     Thermal()
 
-Equivalence to convert between temperature and energy according to the relation ``E = k*T``,
+Equivalence to convert between temperature and energy according to the relation ``E = kT``,
 where
 * ``E`` is the energy,
 * ``T`` is the temperature and
