@@ -2,6 +2,8 @@
 
 ## master
 
+## v0.2.0
+
 * ![BREAKING](https://img.shields.io/badge/-BREAKING-red) `PhotonEnergy` is renamed to `Spectral`. ([#14](https://github.com/sostock/UnitfulEquivalences.jl/pull/14))
 * ![Feature](https://img.shields.io/badge/-feature-green) The `Thermal()` equivalence is added. ([#13](https://github.com/sostock/UnitfulEquivalences.jl/pull/13))
 
