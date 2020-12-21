@@ -42,7 +42,7 @@ DocTestSetup = :(using Unitful, UnitfulEquivalences)
 ```
 
 An equivalence can have an arbitrary number of `edconvert` methods defined for it.
-For example, the `PhotonEnergy` equivalence can convert between energy, frequency, wavelength, and wavenumber.
+For example, the `Spectral` equivalence can convert between energy, frequency, wavelength, and wavenumber.
 For each pair of these quantities, there is one pair of `edconvert` methods defined that handles the conversion between them.
 
 ### Convenience functions

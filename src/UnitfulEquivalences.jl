@@ -1,6 +1,6 @@
 module UnitfulEquivalences
 
-export @eqrelation, Equivalence, MassEnergy, PhotonEnergy, Thermal
+export @eqrelation, Equivalence, MassEnergy, Spectral, Thermal
 
 import Unitful
 using Unitful: AbstractQuantity, AffineQuantity, DimensionlessQuantity, Dimensions, Level,
@@ -9,8 +9,7 @@ using Unitful: AbstractQuantity, AffineQuantity, DimensionlessQuantity, Dimensio
 """
     Equivalence
 
-Abstract supertype for all equivalences. By default, the equivalences [`MassEnergy`](@ref)
-and [`PhotonEnergy`](@ref) are defined.
+Abstract supertype for all equivalences.
 """
 abstract type Equivalence end
 
@@ -48,7 +47,7 @@ Convert `x` to the units `u` (of different dimensions) by using the specified eq
 julia> uconvert(u"keV", 1u"me", MassEnergy()) # electron rest mass is equivalent to ≈511 keV
 510.9989499961642 keV
 
-julia> uconvert(u"eV", 589u"nm", PhotonEnergy()) # photon energy of sodium D₂ line (≈589 nm)
+julia> uconvert(u"eV", 589u"nm", Spectral()) # photon energy of sodium D₂ line (≈589 nm)
 2.104994880020378 eV
 ```
 """
@@ -68,7 +67,7 @@ resulting number to type `T`.
 julia> ustrip(u"keV", 1u"me", MassEnergy()) # electron rest mass is equivalent to ≈511 keV
 510.9989499961642
 
-julia> ustrip(u"eV", 589u"nm", PhotonEnergy()) # photon energy (in eV) of sodium D₂ line
+julia> ustrip(u"eV", 589u"nm", Spectral()) # photon energy (in eV) of sodium D₂ line
 2.104994880020378
 ```
 """
