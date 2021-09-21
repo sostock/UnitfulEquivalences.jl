@@ -103,8 +103,13 @@ struct Equiv4 <: Equivalence end
     @test uconvert(u"keV", 5u"km/m", Equiv4()) === 5u"keV"
     @test uconvert(u"MeV", 5, Equiv4()) === (1//200_000)u"MeV"
     @test_throws ArgumentError uconvert(u"m^3", 1u"V", Equiv4())
-    @test_throws LoadError @macroexpand @eqrelation Equiv4 Unitful.Energy = Unitful.Mass * Unitful.c0^2
-    @test_throws LoadError @macroexpand @eqrelation Equiv4 Unitful.Energy + Unitful.Mass = Unitful.c0^2
+    if VERSION ≥ v"1.7.0-DEV"
+        @test_throws ErrorException @macroexpand @eqrelation Equiv4 Unitful.Energy = Unitful.Mass * Unitful.c0^2
+        @test_throws ErrorException @macroexpand @eqrelation Equiv4 Unitful.Energy + Unitful.Mass = Unitful.c0^2
+    else
+        @test_throws LoadError @macroexpand @eqrelation Equiv4 Unitful.Energy = Unitful.Mass * Unitful.c0^2
+        @test_throws LoadError @macroexpand @eqrelation Equiv4 Unitful.Energy + Unitful.Mass = Unitful.c0^2
+    end
 end
 
 ≈ᵤ(x, y; kwargs...) = unit(x) === unit(y) && ≈(x, y; kwargs...)
