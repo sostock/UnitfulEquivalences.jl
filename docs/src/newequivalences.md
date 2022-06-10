@@ -4,7 +4,7 @@ Each equivalence must be of a type that is a subtype of `Equivalence`.
 To define a new equivalence, one creates a new such type and extends the [`UnitfulEquivalences.edconvert`](@ref) function to enable conversion between the desired dimensions.
 
 As an example, let us implement our own version of the `MassEnergy()` equivalence.
-```julia 
+```julia
 struct MyMassEnergy <: Equivalence end
 ```
 For this equivalence, a singleton struct is sufficient.
@@ -15,8 +15,8 @@ The third argument is the `MyMassEnergy` equivalence.
 ```julia
 using Unitful: 𝐋, 𝐌, 𝐓, Energy, Mass, c0
 
-UnitfulEquivalence.edconvert(::typeof(𝐋^2*𝐌*𝐓^-2), x::Mass, ::MyMassEnergy) = x * c0^2
-UnitfulEquivalence.edconvert(::typeof(𝐌), x::Energy, ::MyMassEnergy) = x / c0^2
+UnitfulEquivalences.edconvert(::typeof(𝐋^2*𝐌*𝐓^-2), x::Mass, ::MyMassEnergy) = x * c0^2
+UnitfulEquivalences.edconvert(::typeof(𝐌), x::Energy, ::MyMassEnergy) = x / c0^2
 ```
 !!! warning
     This particular example implementation does not work correctly on 32-bit systems, since `c0` is based on an `Int` and `c0^2` therefore overflows on these systems ($$299792458^2 > 2^{31}-1$$).
@@ -53,9 +53,9 @@ The definition of the `edconvert` methods above could be simplified in two ways:
   ```julia
   using Unitful: Energy, Mass, c0
   using UnitfulEquivalences: dimtype
-  
-  UnitfulEquivalence.edconvert(::dimtype(Energy), x::Mass, ::MyMassEnergy) = x * c0^2
-  UnitfulEquivalence.edconvert(::dimtype(Mass), x::Energy, ::MyMassEnergy) = x / c0^2
+
+  UnitfulEquivalences.edconvert(::dimtype(Energy), x::Mass, ::MyMassEnergy) = x * c0^2
+  UnitfulEquivalences.edconvert(::dimtype(Mass), x::Energy, ::MyMassEnergy) = x / c0^2
   ```
 
 * In many cases, including this one, equivalences are simple proportional or antiproportional relations where the quotient or the product of the two equivalent quantities is a constant value (like a physical constant).
@@ -63,7 +63,7 @@ The definition of the `edconvert` methods above could be simplified in two ways:
   In the case of the `MyMassEnergy` equivalence, it would be used as follows:
   ```julia
   using Unitful: Energy, Mass, c0
-  
+
   @eqrelation MyMassEnergy Energy/Mass = c0^2
   ```
   This defines the two `edconvert` methods as shown above.
