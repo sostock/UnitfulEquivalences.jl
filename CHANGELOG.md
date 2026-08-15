@@ -2,7 +2,7 @@
 
 ## master
 
-* ![Feature](https://img.shields.io/badge/-feature-green) The `SpectralDensity(at)` equivalence is added, which relates spectral flux densities per unit wavelength, per unit frequency, and per unit photon energy for a sample located at the spectral coordinate `at`.
+* ![Feature](https://img.shields.io/badge/-feature-green) The `SpectralDensity(at)` equivalence is added, which relates spectral flux densities per unit wavelength, per unit frequency, and per unit photon energy for a sample located at the spectral coordinate `at`. ([#31](https://github.com/sostock/UnitfulEquivalences.jl/pull/31))
 
 ## v0.2.0
 
