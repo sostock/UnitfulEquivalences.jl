@@ -188,6 +188,37 @@ end
     end
 end
 
+@testset "SpectralDensity" begin
+    F_λ, F_ν, F_E = 1u"W/m^2/nm", 1u"W/m^2/Hz", 1u"W/m^2/eV"
+    λ = 500u"nm"
+    ν = uconvert(u"THz", Unitful.c0 / λ)
+    E = uconvert(u"eV", Unitful.h * Unitful.c0 / λ)
+
+    # Wavelength <--> frequency density: F_ν = F_λ * λ^2 / c
+    @test uconvert(u"W/m^2/Hz", F_λ, SpectralDensity(λ)) ≈ᵤ uconvert(u"W/m^2/Hz", F_λ * λ^2 / Unitful.c0)
+    @test uconvert(u"W/m^2/nm", F_ν, SpectralDensity(λ)) ≈ᵤ uconvert(u"W/m^2/nm", F_ν * Unitful.c0 / λ^2)
+
+    # Frequency <--> energy density: F_E = F_ν / h
+    @test uconvert(u"W/m^2/eV", F_ν, SpectralDensity(λ)) ≈ᵤ uconvert(u"W/m^2/eV", F_ν / Unitful.h)
+    @test uconvert(u"W/m^2/Hz", F_E, SpectralDensity(λ)) ≈ᵤ uconvert(u"W/m^2/Hz", F_E * Unitful.h)
+
+    # Wavelength <--> energy density: F_E = F_λ * λ^2 / (h * c)
+    @test uconvert(u"W/m^2/eV", F_λ, SpectralDensity(λ)) ≈ᵤ uconvert(u"W/m^2/eV", F_λ * λ^2 / (Unitful.h * Unitful.c0))
+    @test uconvert(u"W/m^2/nm", F_E, SpectralDensity(λ)) ≈ᵤ uconvert(u"W/m^2/nm", F_E * Unitful.h * Unitful.c0 / λ^2)
+
+    # The sample coordinate may be given in any of the equivalent forms
+    for at in (ν, E)
+        @test uconvert(u"W/m^2/Hz", F_λ, SpectralDensity(at)) ≈ᵤ uconvert(u"W/m^2/Hz", F_λ, SpectralDensity(λ))
+    end
+
+    # Round trip
+    @test uconvert(u"W/m^2/nm", uconvert(u"W/m^2/Hz", F_λ, SpectralDensity(λ)), SpectralDensity(λ)) ≈ᵤ 1.0u"W/m^2/nm"
+
+    @test_throws ArgumentError uconvert(u"W/m^2/Hz", F_ν, SpectralDensity(λ)) # Same dimension
+    @test_throws ArgumentError uconvert(u"W/m^2/Hz", 1u"W", SpectralDensity(λ)) # Not a spectral density
+    @test_throws MethodError SpectralDensity(1u"kg") # Invalid spectral coordinate
+end
+
 @testset "Thermal" begin
     @test uconvert(u"meV", 20u"°C", Thermal()) ≈ᵤ 25.261_712_457_979u"meV"
     @test uconvert(u"eV", 5000u"K", Thermal()) ≈ᵤ 0.430_866_663_107u"eV"
