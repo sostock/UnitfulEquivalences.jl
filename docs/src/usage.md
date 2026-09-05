@@ -8,10 +8,11 @@ uconvert(u"keV", 1u"me", MassEnergy()) # electron rest mass is equivalent to ≈
 ustrip(u"keV", 1u"me", MassEnergy())
 ```
 
-The equivalences [`MassEnergy`](@ref), [`Spectral`](@ref), and [`Thermal`](@ref) are defined and exported by this package:
+The equivalences [`MassEnergy`](@ref), [`Spectral`](@ref), [`SpectralDensity`](@ref), and [`Thermal`](@ref) are defined and exported by this package:
 ```@docs
 MassEnergy
 Spectral
+SpectralDensity
 Thermal
 ```
 

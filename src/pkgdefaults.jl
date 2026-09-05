@@ -1,4 +1,4 @@
-using Unitful: Energy, Frequency, Length, Mass, Temperature, Wavenumber, c0, h, ħ, k, unit, ustrip
+using Unitful: @derived_dimension, Energy, Frequency, Length, Mass, Temperature, Wavenumber, c0, h, ħ, k, unit, ustrip, 𝐋, 𝐌, 𝐓
 
 """
     MassEnergy()
@@ -104,6 +104,49 @@ function edconvert(::dimtype(Wavenumber), x::Length, ::Spectral{F,L,N}) where {F
     L === N       ? inv(x)  :
     L === :linear ? 2*(π/x) : inv(2*(π*x))
 end
+
+# Flux density dimensions related by `SpectralDensity` (cf. astropy's spectral_density).
+@derived_dimension FluxDensityPerWavelength 𝐌 * 𝐋^-1 * 𝐓^-3
+@derived_dimension FluxDensityPerFrequency 𝐌 * 𝐓^-2
+@derived_dimension FluxDensityPerEnergy 𝐋^-2 * 𝐓^-1
+
+"""
+    SpectralDensity(at)
+
+Equivalence between the three spectral flux density conventions: per unit wavelength (``F_λ``, e.g., W m^-2 nm^-1), per unit frequency (``F_ν``, e.g., W m^-2 Hz^-1), and per unit photon energy (``F_E``, e.g., W m^-2 eV^-1). The three conventions describe the same energy flux distributed over equivalent spectral intervals, ``F_λ |dλ| = F_ν |dν| = F_E |dE|``, which gives ``F_ν = F_λ λ^2/c`` and ``F_E = F_ν/h``, where:
+
+- ``λ`` is the wavelength,
+- ``h`` is the Planck constant, and
+- ``c`` is the speed of light in vacuum.
+
+Unlike the other equivalences, `SpectralDensity` is parameterized by the location of the flux density sample: `at` is the spectral coordinate at which the density is evaluated, and may itself be given as a wavelength, frequency (``ν = c/λ``), or photon energy (``E = hν``).
+
+# Example
+
+```jldoctest
+julia> F_λ = 1e-15u"W/m^2/nm";
+
+julia> uconvert(u"W/m^2/Hz", F_λ, SpectralDensity(500u"nm")) ≈ F_λ * (500u"nm")^2 / Unitful.c0
+true
+```
+"""
+struct SpectralDensity{Q<:Union{Length, Frequency, Energy}} <: Equivalence
+    at::Q
+end
+
+Base.show(io::IO, e::SpectralDensity) = print(io, SpectralDensity, "(", e.at, ")")
+
+# The wavelength equivalent of the sample's spectral coordinate.
+_at_wavelength(at::Length) = at
+_at_wavelength(at::Frequency) = c0 / at
+_at_wavelength(at::Energy) = h * c0 / at
+
+edconvert(::dimtype(FluxDensityPerFrequency), x::FluxDensityPerWavelength, e::SpectralDensity) = x * _at_wavelength(e.at)^2 / c0
+edconvert(::dimtype(FluxDensityPerWavelength), x::FluxDensityPerFrequency, e::SpectralDensity) = x * c0 / _at_wavelength(e.at)^2
+edconvert(::dimtype(FluxDensityPerEnergy), x::FluxDensityPerFrequency, e::SpectralDensity) = x / h
+edconvert(::dimtype(FluxDensityPerFrequency), x::FluxDensityPerEnergy, e::SpectralDensity) = x * h
+edconvert(::dimtype(FluxDensityPerEnergy), x::FluxDensityPerWavelength, e::SpectralDensity) = x * _at_wavelength(e.at)^2 / (h * c0)
+edconvert(::dimtype(FluxDensityPerWavelength), x::FluxDensityPerEnergy, e::SpectralDensity) = x * h * c0 / _at_wavelength(e.at)^2
 
 """
     Thermal()
