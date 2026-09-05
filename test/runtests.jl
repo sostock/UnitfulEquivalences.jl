@@ -31,7 +31,11 @@ UnitfulEquivalences.edconvert(::typeof(dimension(u"s")), x::Unitful.Length, ::No
     @test uconvert(u"kg", (10//1)u"°C", Equiv1()) === (5663//10_000)u"kg"
     @test uconvert(u"°C", 10u"kg", Equiv1()) === 4726.85u"°C"
     @test uconvert(u"eV", 10u"mm/m", Equiv1()) === (1//100)u"eV"
+    @test uconvert(u"eV", Equiv1())(10u"mm/m") === (1//100)u"eV"
+    @test u"eV"(Equiv1())(10u"mm/m") === (1//100)u"eV"
     @test uconvert(u"eV", 10, Equiv1()) === 10u"eV"
+    @test uconvert(u"eV", Equiv1())(10) === 10u"eV"
+    @test u"eV"(Equiv1())(10) === 10u"eV"
     @test uconvert(NoUnits, 10u"eV", Equiv1()) === 10
     @test ustrip(u"ms", 1u"inch", Equiv1()) === (254//100)
     @test ustrip(u"km", 1.0u"d", Equiv1()) === 864.0
