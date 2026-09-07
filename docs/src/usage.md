@@ -8,6 +8,14 @@ uconvert(u"keV", 1u"me", MassEnergy()) # electron rest mass is equivalent to ≈
 ustrip(u"keV", 1u"me", MassEnergy())
 ```
 
+To simplify conversion, a partially applied method of `uconvert` can be used: `uconvert(unit, equivalence)` returns a function that converts to  `unit` via the specified `equivalence`.
+Since units itself are callable (`unit(x)` is equivalent to `uconvert(unit, x)`), this enables a convenient syntax for conversion:
+```@repl
+using Unitful, UnitfulEquivalences # hide
+1u"me" |> uconvert(u"keV", MassEnergy())
+1u"me" |> u"keV"(MassEnergy())
+```
+
 The equivalences [`MassEnergy`](@ref), [`Spectral`](@ref), [`SpectralDensity`](@ref), and [`Thermal`](@ref) are defined and exported by this package:
 ```@docs
 MassEnergy
